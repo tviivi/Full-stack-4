@@ -1,0 +1,29 @@
+{
+  "name": "full-stack-4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "echo \"testi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tviivi/Full-stack-4.git"
+  },
+  "author": "Viivi Tiihonen",
+  "license": "MIt",
+  "bugs": {
+    "url": "https://github.com/tviivi/Full-stack-4/issues"
+  },
+  "homepage": "https://github.com/tviivi/Full-stack-4#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.15.0"
+  }
+}
