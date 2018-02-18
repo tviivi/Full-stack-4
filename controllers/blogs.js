@@ -1,5 +1,5 @@
 const blogsRouter = require('express').Router()
-const Blog = require('../models/blogmongoose')
+const Blog = require('../models/blog')
 
 const formatBlog = (blog) => {
     return {
@@ -15,7 +15,7 @@ blogsRouter.get('/', (request, response) => {
     Blog
         .find({})
         .then(blogs => {
-            response.json(blogs)
+            response.json(blogs.map(formatBlog))
         })
 })
 
