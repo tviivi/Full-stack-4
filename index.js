@@ -7,9 +7,9 @@ const mongoose = require('mongoose')
 const middleware = require('./utils/middleware')
 const blogsRouter = require('./controllers/blogs')
 
-app.use('/api/blogs', blogsRouter)
 app.use(cors())
 app.use(bodyParser.json())
+app.use('/api/blogs', blogsRouter)
 app.use(middleware.error)
 
 const mongoUrl = 'mongodb://fullstack:sekred@ds113915.mlab.com:13915/fullblogilista'
