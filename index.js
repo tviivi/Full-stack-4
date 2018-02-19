@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 app.use('/api/blogs', blogsRouter)
 app.use(middleware.error)
 
-const mongoUrl = 'mongodb://fullstack:sekred@ds113915.mlab.com:13915/fullblogilista'
+const mongoUrl = 'mongodb://fullstack:*****@ds113915.mlab.com:13915/fullblogilista'
 mongoose.connect(mongoUrl)
 mongoose.Promise = global.Promise
 
