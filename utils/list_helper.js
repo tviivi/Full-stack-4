@@ -11,10 +11,16 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blogs) => {
-    var mostLikes = 0;
+    var mostLikes = {
+        author: '',
+        title: '',
+        likes: ''
+    }
     blogs.forEach(blogi => {
-        if (mostLikes < blogi.likes) {
-            mostLikes = blogi.likes
+        if (mostLikes.likes < blogi.likes) {
+            mostLikes.author = blogi.author
+            mostLikes.title = blogi.title
+            mostLikes.likes = blogi.likes
         }
     })
     return mostLikes;
