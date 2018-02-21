@@ -1,3 +1,5 @@
+const config = require('./utils/config')
+
 const http = require('http')
 const express = require('express')
 const app = express()
@@ -12,11 +14,26 @@ app.use(bodyParser.json())
 app.use('/api/blogs', blogsRouter)
 app.use(middleware.error)
 
-const mongoUrl = 'mongodb://fullstack:*****@ds113915.mlab.com:13915/fullblogilista'
-mongoose.connect(mongoUrl)
+mongoose
+  .connect(config.mongoUrl)
+  .then( () => {
+    console.log('connected to database', config.mongoUrl)
+  })
+  .catch( err => {
+    console.log(err)
+  })
 mongoose.Promise = global.Promise
 
-const PORT = 3003
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+const server = http.createServer(app)
+
+server.listen(config.port, () => {
+  console.log(`Server running on port ${config.port}`)
 })
+
+server.on('close', () => {
+  mongoose.connection.close()
+})
+
+module.exports = {
+  app, server
+}
