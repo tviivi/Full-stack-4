@@ -2,41 +2,32 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const { formatBlog, initialBlogs, nonExistingId, blogsInDb } = require('./test_helper')
 
-const initialBlogs = [
-    {
-        title: "moi",
-        author: "Viivi",
-        url: "www.testi.fi",
-        likes: 900
-    },
-    {
-        title: "helou",
-        author: "Bloggaaja",
-        url: "www.moikkeliskoikkelis.fi",
-        likes: 0
-    }
-  ]
+describe('when there is initially some blogs saved', async () => {
+    beforeAll(async () => {
+        await Blog.remove({})
 
-  beforeAll(async () => {
-    await Blog.remove({})
-  
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-  
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
-  })
+        const blogObjects = initialBlogs.map(b => new Blog(b))
+        await Promise.all(blogObjects.map(b => b.save()))
+    })
 
-//describe.skip('apitest', () => {
     test('blogs are returned as json', async () => {
-        await api
+        const blogsInDatabase = await blogsInDb()
+        const response = await api
             .get('/api/blogs')
             .expect(200)
             .expect('Content-Type', /application\/json/)
+
+        expect(response.body.length).toBe(blogsInDatabase.length)
+
+        const returnedContents = response.body.map(b => b.content)
+        blogsInDatabase.forEach(blog => {
+            expect(returnedContents).toContain(blog.content)
+        })
     })
 
-    test('there are two blogs', async () => {
+    test('there is a right amount of blogs', async () => {
         const response = await api
             .get('/api/blogs')
 
@@ -49,12 +40,12 @@ const initialBlogs = [
 
         expect(response.body[0].title).toBe('moi')
     })
+})
 
-    afterAll(() => {
-        server.close()
-    })
-
+describe('addition of a new blog', async () => {
     test('a valid blog can be added', async () => {
+        const blogsAtStart = await blogsInDb()
+
         const newBlog = {
             title: 'helou',
             author: 'Bloggaaja',
@@ -68,55 +59,54 @@ const initialBlogs = [
             .expect(200)
             .expect('Content-Type', /application\/json/)
 
-        const response = await api
-            .get('/api/blogs')
+        const blogsAfterOperation = await blogsInDb()
 
-        const titles = response.body.map(r => r.title)
+        expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
 
-        expect(response.body.length).toBe(initialBlogs.length+1)
+        const titles = blogsAfterOperation.map(r => r.title)
         expect(titles).toContain('helou')
     })
-//})
 
-test('blog without likes is also added ', async () => {
-    const newBlog = {
-        title: "testi",
-        author: "testi",
-        url: "testi"
-    }
+    test('blog without likes is also added ', async () => {
+        const newBlog = {
+            title: "testi",
+            author: "testi",
+            url: "testi"
+        }
 
-    const intialBlogs = await api
-        .get('/api/blogs')
+        const blogsAtStart = await blogsInDb()
 
-    await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(200)
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(200)
 
-    const response = await api
-        .get('/api/blogs')
+        const blogsAfterOperation = await blogsInDb()
+        const contents = blogsAfterOperation.map(r => r.content)
 
-    const contents = response.body.map(r => r.content)
-    expect(response.body.length).toBe(intialBlogs.body.length+1)
+        expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
+    })
+
+    test('note without title or url is not added', async () => {
+        const newBlog = {
+            author: "testi",
+            likes: 56
+        }
+
+        const blogsAtStart = await blogsInDb()
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+
+        const blogsAfterOperation = await blogsInDb()
+        const titles = blogsAfterOperation.map(r => r.title)
+
+        expect(blogsAfterOperation.length).toBe(blogsAtStart.length)
+    })
 })
 
-test('note without title or url is not added', async () => {
-    const newBlog = {
-      author: "testi",
-      likes: 56
-    }
-  
-    const intialBlogs = await api
-      .get('/api/blogs')
-  
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(400)
-  
-    const response = await api
-      .get('/api/blogs')
-  
-    const contents = response.body.map(r => r.content)
-    expect(response.body.length).toBe(intialBlogs.body.length)
-  })
+afterAll(() => {
+    server.close()
+})
