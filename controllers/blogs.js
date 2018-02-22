@@ -16,14 +16,23 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogs.map(formatBlog))
 })
 
-blogsRouter.post('/', (request, response) => {
-    const blog = new Blog(request.body)
+blogsRouter.post('/', async (request, response) => {
+    const body = request.body
 
-    blog
-        .save()
-        .then(result => {
-            response.status(201).json(result)
-        })
+    if (body.likes === undefined) {
+        body.likes === 0
+        return response.status(400).json({ error: 'likes missing' })
+      }
+    
+      const blog = new Blog({
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes
+      })
+
+    const savedBlog = await blog.save()
+    response.json(formatBlog(savedBlog))
 })
 
 module.exports = blogsRouter
