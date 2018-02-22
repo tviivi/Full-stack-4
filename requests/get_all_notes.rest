@@ -2,8 +2,7 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "terve",
+    "title": "plööö",
     "author": "Viivi",
-    "url": "www.kolmastesti.fi",
-    "likes": 20
+    "url": "www.kuudestesti.fi"
 }

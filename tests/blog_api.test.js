@@ -59,7 +59,7 @@ const initialBlogs = [
             title: 'helou',
             author: 'Bloggaaja',
             url: 'www.moikkeliskoikkelis.fi',
-            likes: 0
+            likes: 10
         }
 
         await api
@@ -78,7 +78,7 @@ const initialBlogs = [
     })
 //})
 
-test('blog without likes is not added ', async () => {
+test('blog without likes is also added ', async () => {
     const newBlog = {
         title: "testi",
         author: "testi",
@@ -91,11 +91,11 @@ test('blog without likes is not added ', async () => {
     await api
         .post('/api/blogs')
         .send(newBlog)
-        .expect(400)
+        .expect(200)
 
     const response = await api
         .get('/api/blogs')
 
     const contents = response.body.map(r => r.content)
-    expect(response.body.length).toBe(intialBlogs.body.length)
+    expect(response.body.length).toBe(intialBlogs.body.length+1)
 })
