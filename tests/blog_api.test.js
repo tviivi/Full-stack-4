@@ -99,3 +99,24 @@ test('blog without likes is also added ', async () => {
     const contents = response.body.map(r => r.content)
     expect(response.body.length).toBe(intialBlogs.body.length+1)
 })
+
+test('note without title or url is not added', async () => {
+    const newBlog = {
+      author: "testi",
+      likes: 56
+    }
+  
+    const intialBlogs = await api
+      .get('/api/blogs')
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  
+    const response = await api
+      .get('/api/blogs')
+  
+    const contents = response.body.map(r => r.content)
+    expect(response.body.length).toBe(intialBlogs.body.length)
+  })

@@ -4,5 +4,5 @@ content-type: application/json
 {
     "title": "plööö",
     "author": "Viivi",
-    "url": "www.kuudestesti.fi"
+    "likes": 85
 }
