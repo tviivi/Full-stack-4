@@ -107,6 +107,35 @@ describe('addition of a new blog', async () => {
     })
 })
 
+describe('deletion of a blog', async () => {
+    let addedBlog
+
+    beforeAll(async () => {
+      addedBlog = new Blog({
+        title: "poisto",
+        author: "poistaja",
+        url: "www.poista.fi",
+        likes: 3
+      })
+      await addedBlog.save()
+    })
+
+    test('DELETE /api/blogs/:id succeeds with proper statuscode', async () => {
+      const blogsAtStart = await blogsInDb()
+
+      await api
+        .delete(`/api/blogs/${addedBlog._id}`)
+        .expect(204)
+
+      const blogsAfterOperation = await blogsInDb()
+
+      const contents = blogsAfterOperation.map(r => r.title)
+
+      expect(contents).not.toContain(addedBlog.title)
+      expect(blogsAfterOperation.length).toBe(blogsAtStart.length - 1)
+    })
+})
+
 afterAll(() => {
     server.close()
 })

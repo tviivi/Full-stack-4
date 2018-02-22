@@ -1,9 +1,1 @@
-POST http://localhost:3003/api/blogs
-content-type: application/json
-
-{
-    "title": "plööö",
-    "author": "Viivi",
-    "url": "www.testiosoite.com",
-    "likes": 85
-}
+DELETE http://localhost:3003/api/blogs/5a8ef2d656afe41f104e4c43
