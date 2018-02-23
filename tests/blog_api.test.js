@@ -141,6 +141,7 @@ describe.only('when there is initially one user at db', async () => {
     beforeAll(async () => {
         await User.remove({})
         const user = new User({ username: 'root', name: 'Henkilo', adult: true, password: 'sekret' })
+        
         await user.save()
     })
 

@@ -1,8 +1,10 @@
-POST http://localhost:3003/api/users
+POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "username": "hee",
-    "name": "henkilötestinnimi",
-    "password": "je"
+    "title": "kolmastestititle",
+    "author": "Henkilö2",
+    "url": "wwww.höhö.fi",
+    "likes": 39,
+    "userId": "5a9014156f454d0660bfcc40"
 }
