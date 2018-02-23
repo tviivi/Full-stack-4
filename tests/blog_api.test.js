@@ -140,29 +140,8 @@ describe('deletion of a blog', async () => {
 describe.only('when there is initially one user at db', async () => {
     beforeAll(async () => {
         await User.remove({})
-        const user = new User({ username: 'root', password: 'sekret' })
+        const user = new User({ username: 'root', name: 'Henkilo', adult: true, password: 'sekret' })
         await user.save()
-    })
-
-    test('POST /api/users succeeds with a fresh username', async () => {
-        const usersBeforeOperation = await usersInDb()
-
-        const newUser = {
-            username: 'mluukkai',
-            name: 'Matti Luukkainen',
-            password: 'salainen'
-        }
-
-        await api
-            .post('/api/users')
-            .send(newUser)
-            .expect(200)
-            .expect('Content-Type', /application\/json/)
-
-        const usersAfterOperation = await usersInDb()
-        expect(usersAfterOperation.length).toBe(usersBeforeOperation.length + 1)
-        const usernames = usersAfterOperation.map(u => u.username)
-        expect(usernames).toContain(newUser.username)
     })
 
     test('POST /api/users fails with proper statuscode and message if username already taken', async () => {
@@ -171,6 +150,7 @@ describe.only('when there is initially one user at db', async () => {
         const newUser = {
             username: 'root',
             name: 'Superuser',
+            adult: true,
             password: 'salainen'
         }
 
