@@ -1,1 +1,9 @@
-DELETE http://localhost:3003/api/blogs/5a8ef2d656afe41f104e4c43
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "henkilötesti",
+    "name": "henkilötestinnimi",
+    "adult": false,
+    "password": "jeje"
+}
