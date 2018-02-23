@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RpIiwiaWQiOiI1YTkwMWUzMzU4NjllZDM2ZTAwYzVjZDAiLCJpYXQiOjE1MTkzOTQ0Njd9.wh2ZTs3RzLWrlDctbbgvUtsdiWwF6rBLe5p5JqMVhKs
 
 {
-    "title": "kolmastestititle",
-    "author": "Henkilö2",
-    "url": "wwww.höhö.fi",
-    "likes": 39,
-    "userId": "5a9014156f454d0660bfcc40"
+    "title": "kokeilu",
+    "author": "testihenkilö",
+    "url": "www.testi.com",
+    "likes": 6,
+    "userId": "5a901e335869ed36e00c5cd0"
 }

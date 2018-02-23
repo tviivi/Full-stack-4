@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const formatBlog = (blog) => {
     return {
@@ -13,13 +14,28 @@ const formatBlog = (blog) => {
 }
 
 blogsRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 } )
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
     response.json(blogs.map(Blog.format))
 })
 
+const getTokenFrom = (request) => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+        return authorization.substring(7)
+    }
+    return null
+}
+
 blogsRouter.post('/', async (request, response) => {
+    const body = request.body
+
     try {
-        const body = request.body
+        const token = getTokenFrom(request)
+        const decodedToken = jwt.verify(token, process.env.SECRET)
+
+        if (!token || !decodedToken.id) {
+            return response.status(401).json({ error: 'token missing or invalid' })
+        }
 
         if (body.likes === undefined) {
             blog.likes = 0
@@ -28,7 +44,7 @@ blogsRouter.post('/', async (request, response) => {
             return response.status(400).json({ error: 'title or url missing' })
         }
 
-        const user = await User.findById(body.userId)
+        const user = await User.findById(decodedToken.id)
         console.log(user)
 
         const blog = new Blog({
@@ -46,7 +62,11 @@ blogsRouter.post('/', async (request, response) => {
 
         response.json(Blog.format(blog))
     } catch (exception) {
-        response.status(500).json({ error: 'something went wrong!' })
+        if (exception.name === 'JsonWebTokenError') {
+            response.status(401).json({ error: exception.message })
+        } else {
+            response.status(500).json({ error: 'something went wrong!' })
+        }
     }
 })
 
